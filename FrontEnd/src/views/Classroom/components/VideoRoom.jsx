@@ -101,9 +101,9 @@ export const VideoRoom = ({ token, url, roomName, participantName, onLeaveRoom }
   const handleLeaveRoom = () => {
     // Tùy thuộc vào vai trò, chuyển hướng người dùng
     if (userRole === 'tutor') {
-      window.location.href = import.meta.env.VITE_API_URL + '/manage-classes';
+      window.location.href =  window.location.origin + '/manage-classes';
     } else {
-      window.location.href = import.meta.env.VITE_API_URL + '/my-classes';
+      window.location.href =  window.location.origin + '/my-classes';
     }
 
     // Vẫn giữ onLeaveRoom để đảm bảo tính tương thích
