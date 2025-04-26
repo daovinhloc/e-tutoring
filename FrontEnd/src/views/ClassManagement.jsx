@@ -8,11 +8,14 @@ import 'react-toastify/dist/ReactToastify.css'
 import AccessDeniedPage from '../components/AccessDeniedPage.jsx'
 import { Button } from '@material-tailwind/react'
 import { ChatBubbleLeftIcon, NewspaperIcon, EllipsisHorizontalIcon } from '@heroicons/react/24/outline'
-import { makeGet, makePost } from '../apiService/httpService'
+import { makeDelete, makeGet, makePost, makePut } from '../apiService/httpService.js'
+import supabase from '../apiService/supabase.js'
+import AuthContext from '../contexts/JWTAuthContext'
 
 const ClassManagement = () => {
   const token = localStorage.getItem('token')
   const role = localStorage.getItem('role')
+  const { user, isAuthenticated } = useContext(AuthContext)
   const [classes, setClasses] = useState([])
   const [inactiveClasses, setInactiveClasses] = useState([])
   const [formData, setFormData] = useState({
@@ -32,19 +35,42 @@ const ClassManagement = () => {
   const [updateFormData, setUpdateFormData] = useState(formData)
   const [currentClassId, setCurrentClassId] = useState(null)
   const hasCheckedPayment = useRef(false)
+  const [chatRooms, setChatRooms] = useState([])
+  const [openMenu, setOpenMenu] = useState(null)
 
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest('.dropdown-menu')) {
+        setOpenMenu(null)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
   if (!token || !role || role == 'Student') {
     return <AccessDeniedPage />
   }
 
+  const getChatRoomsByTutorId = async () => {
+    if (user && user.role === 'Tutor') {
+      const { data, error } = await supabase.from('chat_rooms').select('*').eq('tutor_id', user.tutorID)
+      if (error) {
+        toast.error('Can not get chat rooms')
+        return []
+      }
+      setChatRooms(data)
+    }
+  }
   useEffect(() => {
     if (role == 'Tutor') {
       fetchClasses()
+      getChatRoomsByTutorId()
     }
   }, [token, role])
 
   useEffect(() => {
     if (!hasCheckedPayment.current) {
+      handleReturnFromPayment()
       hasCheckedPayment.current = true // Set the flag to true after running the function
     }
   }, [])
@@ -69,7 +95,7 @@ const ClassManagement = () => {
 
   const handleDeactivateClass = async (classID) => {
     try {
-      await makePost(`tutors/deleteClasses/${classID}`)
+      await makeDelete(`tutors/deleteClasses/${classID}`)
       toast('Class deactivate successfully!')
       fetchClasses()
     } catch (error) {
@@ -80,7 +106,7 @@ const ClassManagement = () => {
 
   const handleActivateClass = async (classID) => {
     try {
-      await makePost(`tutors/activeClasses/${classID}`)
+      await makePut(`tutors/activeClasses/${classID}`)
       toast('Class activate successfully!')
       fetchClasses()
     } catch (error) {
@@ -188,6 +214,9 @@ const ClassManagement = () => {
     }
   }
 
+  const handleReturnFromPayment = async () => {
+  }
+
   const handleOpenUpdateModal = (cls) => {
     setCurrentClassId(cls.classID)
     setUpdateFormData({
@@ -204,6 +233,22 @@ const ClassManagement = () => {
     })
     setIsUpdateModalOpen(true)
   }
+  const handleUpdateChatRoom = async (cls) => {
+    const updateRoom = {
+      name: cls.className,
+      tutor_id: cls.tutorID,
+      class_id: +cls.classID
+    }
+
+    const { data, error } = await supabase.from('chat_rooms').update(updateRoom).eq('class_id', cls.classID).select()
+
+    if (error) {
+      console.error('failed to update chat room:', error)
+      throw new Error('can not update class chat room')
+    }
+
+    return data[0]
+  }
 
   const handleUpdateClass = async () => {
     try {
@@ -215,6 +260,11 @@ const ClassManagement = () => {
 
       const response = await makePost(`tutors/updateClasses/${currentClassId}`, updateFormData)
       setClasses(classes.map((cls) => (cls.id === currentClassId ? response.data : cls)))
+      handleUpdateChatRoom({
+        className: updateFormData.className,
+        tutorID: updateFormData.tutorID,
+        classID: currentClassId
+      })
       setIsUpdateModalOpen(false)
       toast.info('Class updated successfully!')
       fetchClasses()
@@ -226,7 +276,8 @@ const ClassManagement = () => {
 
   const handleUnenrollStudent = async (classID, studentID) => {
     try {
-      await makePost(`students/unEnrollClass/${classID}`, { studentID })
+      await makePost(`tutors/unEnrollClass/${classID}`, { studentID })
+      // await axios.post(`http://localhost:5000/api/students/unEnrollClass/${classID}`, { studentID })
       toast('Student unenrolled successfully!')
       fetchClasses()
     } catch (error) {
@@ -247,6 +298,38 @@ const ClassManagement = () => {
       )
     }
     return null
+  }
+
+  const handleAddChatRoom = async (cls) => {
+    const newRoom = {
+      name: cls.className,
+      tutor_id: cls.tutorID,
+      class_id: +cls.classID
+    }
+    const { data, error } = await supabase.from('chat_rooms').insert([newRoom]).select()
+    if (error) {
+      toast.error('Can not create new chat room')
+      return
+    } else {
+      const { data, error } = await supabase
+        .from('chat_room_members')
+        .insert([
+          {
+            chat_room_id: +cls.classID,
+            role: 'Tutor',
+            user_id: user.userID,
+            user_name: user.userName
+          }
+        ])
+        .select()
+      if (error) {
+        toast.error('Can not create new chat room')
+        return
+      } else {
+        getChatRoomsByTutorId()
+      }
+    }
+    toast.success('Create chat room success')
   }
 
   return (
@@ -271,16 +354,17 @@ const ClassManagement = () => {
               <div className='mb-2 text-left w-full'>
                 <h2 className='text-lg font-bold'>{cls.className}</h2>
                 <p className='text-sm mb-2'>Subject: {cls.subject}</p>
-                <Link
-                  to={`/class-documents/${cls.classID}`}
-                  className='hover:text-orange-600 pr-2 py-1 rounded text-blue-500 text-sm'
-                >
-                  <i className='fa-solid fa-folder-open mr-1'></i>
-                  <span>Documents</span>
-                </Link>
               </div>
-              <div className='w-full text-right'>
+              {/* <div className='w-full text-right'>
                 {renderUnenrollButton(cls.classID, cls.studentID)}
+                <Link
+                  to={`/classroom?room=${encodeURIComponent(cls.className)}&name=${encodeURIComponent(
+                    localStorage.getItem('userName') || 'Tutor'
+                  )}`}
+                  className='bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 mr-2'
+                >
+                  Create Class
+                </Link>
                 <Link
                   to={`/my-classes/${cls.classID}/blogs`}
                   className='bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 mr-2'
@@ -305,6 +389,52 @@ const ClassManagement = () => {
                 >
                   Deactivate
                 </button>
+              </div> */}
+              <div className='w-full text-right relative'>
+                <div className='inline-flex gap-2 items-center'>
+                  {renderUnenrollButton(cls.classID, cls.studentID)}
+
+                  <Link
+                    to={`/classroom?room=${encodeURIComponent(cls.className)}&name=${encodeURIComponent(
+                      localStorage.getItem('userName') || 'Tutor'
+                    )}`}
+                    className='bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600'
+                  >
+                    Create Class
+                  </Link>
+
+                  <div className='relative inline-block text-left'>
+                    <button
+                      onClick={() => setOpenMenu((open) => (open === cls.classID ? null : cls.classID))}
+                      className='bg-gray-200 text-gray-700 px-2 py-1 rounded hover:bg-gray-300'
+                    >
+                      More ⋮
+                    </button>
+
+                    {openMenu === cls.classID && (
+                      <div className='absolute right-0 mt-2 w-40 bg-white rounded shadow-md z-10 dropdown-menu'>
+                        <Link to={`/my-classes/${cls.classID}/blogs`} className='block px-4 py-2 hover:bg-gray-100'>
+                          Blogs
+                        </Link>
+                        <Link to={`/my-classes/${cls.classID}/stream`} className='block px-4 py-2 hover:bg-gray-100'>
+                          Stream
+                        </Link>
+                        <button
+                          onClick={() => handleOpenUpdateModal(cls)}
+                          className='block w-full text-left px-4 py-2 hover:bg-gray-100'
+                        >
+                          Update
+                        </button>
+                        <button
+                          onClick={() => handleDeactivateClass(cls.classID)}
+                          className='block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100'
+                        >
+                          Deactivate
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           ))}
@@ -458,7 +588,7 @@ const ClassManagement = () => {
         )}
 
         {isUpdateModalOpen && (
-          <div className='fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center'>
+          <div className='fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-20'>
             <div className='bg-white p-8 rounded shadow-lg w-1/2 max-h-[80vh] overflow-y-auto mt-20'>
               <h2 className='text-xl font-bold mb-4'>Update Class</h2>
               <div className='mb-4'>
