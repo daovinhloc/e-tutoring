@@ -1,0 +1,78 @@
+.participant {
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  height: 225px;
+  background-color: #222;
+}
+
+.video-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background-color: #222;
+}
+
+.video-muted {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  font-size: 14px;
+}
+
+.participant-info {
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+.name {
+  font-weight: 500;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.indicators {
+  display: flex;
+  gap: 5px;
+}
+
+.indicator {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+}
+
+.local .video-container video {
+  transform: scaleX(-1); /* Mirror local video */
+}
+
+@media (max-width: 768px) {
+  .participants-container.with-screen-share .participant {
+    height: 150px;
+  }
+  
+  .participants-container.with-screen-share .video-container {
+    height: 110px;
+  }
+} 

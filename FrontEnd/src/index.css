@@ -1,0 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root {
+  font-family: 'Poppins', sans-serif;
+}
+
+@media (max-width: 960px) {
+  .mobile-hidden {
+    display: none;
+  }
+}
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: #ff9800;
+}
+/* ChatBox.css */
+/* .chat-box {
+  position: fixed;
+  bottom: 38px;
+  right: 20px;
+  width: 300px;
+  max-height: 400px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+  transform: translateY(100%);
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-box.open {
+  transform: translateY(0);
+}
+
+.chat-header {
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  text-align: center;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.chat-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.messages {
+  height: 300px;
+  overflow-y: scroll;
+  padding-bottom: 10px;
+}
+
+.message {
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  background-color: #f1f1f1;
+}
+
+.message.self {
+  background-color: #e1ffc7;
+  align-self: flex-end;
+}
+
+.timestamp {
+  font-size: 0.8em;
+  color: #999;
+  display: block;
+  text-align: right;
+}
+
+.input-box {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+}
+
+.input-box input {
+  flex: 1;
+  padding: 10px;
+  width: 100px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.input-box button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+} */
+/*
+const otherClasses = [
+    {
+      id: 1,
+      imageLink: 'class1.jpg',
+      name: 'Class 1',
+      description: 'Description of Class 1'
+    },
+    {
+      id: 2,
+      imageLink: 'class2.jpg',
+      name: 'Class 2',
+      description: 'Description of Class 2'
+    },
+    {
+      id: 3,
+      imageLink: 'class3.jpg',
+      name: 'Class 3',
+      description: 'Description of Class 3'
+    }
+    // Add more classes here...
+  ]
+*/
+/*
+<div className='w-full md:w-1/4 pb-4'>
+          <Card className='shadow-lg h-full flex flex-col'>
+            <CardBody className='flex flex-col items-center p-6 flex-grow'>
+              <CircularImg avatar={tutor.avatar} />
+              <Typography variant='h5' className='mb-2'>
+                {tutor.name}
+              </Typography>
+              <Typography variant='body1' className='text-center'>
+                {tutor.description}
+              </Typography>
+              <Typography tag='h3' className='mt-4'>
+                <strong>Rating:</strong> {tutor.rating}
+              </Typography>
+              <Typography tag='h3'>
+                <strong>Subjects:</strong> {tutor.subjects}
+              </Typography>
+
+              <NavLink
+                to='/tutor-profile'
+                className='w-50 bg-blue-500 text-white py-2 px-4 rounded-md shadow-sm hover:bg-blue-600 transition duration-300'
+              >
+                Request now
+              </NavLink>
+
+              <Typography className='p-5' variant='h5'>
+                More classes with {tutor.name}
+              </Typography>
+
+              <Card className='shadow-lg w-full max-h-80 overflow-y-auto'>
+                <CardBody>
+                  {otherClasses.map((otherClass) => (
+                    <Card key={otherClass.id} className='flex mb-4'>
+                      <div className='flex-none w-32'>
+                        <img
+                          src={otherClass.imageLink}
+                          alt={otherClass.name}
+                          className='w-full h-24 object-cover rounded-lg'
+                        />
+                      </div>
+                      <div className='flex-grow p-4'>
+                        <Typography variant='h5' className='mb-2'>
+                          {otherClass.name}
+                        </Typography>
+                        <Typography variant='body1' className='mb-2'>
+                          {otherClass.description}
+                        </Typography>
+                      </div>
+                    </Card>
+                  ))}
+                </CardBody>
+              </Card>
+            </CardBody>
+          </Card>
+        </div>
+*/

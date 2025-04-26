@@ -1,0 +1,205 @@
+.classroom-app {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  background-image: linear-gradient(to bottom right, #f8f9fa, #e9ecef);
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.classroom-page {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.classroom-join-form-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 20px;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+}
+
+.classroom-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 20px;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+}
+
+.classroom-page h1 {
+  text-align: center;
+  color: var(--text-color);
+  margin-bottom: 40px;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.classroom-page button {
+  padding: 12px 18px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.classroom-page button:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.classroom-page button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.classroom-page input {
+  padding: 12px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 15px;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.classroom-page input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.2);
+  outline: none;
+}
+
+.classroom-error {
+  color: var(--error-color);
+  font-size: 14px;
+  margin-top: 8px;
+  background-color: rgba(234, 67, 53, 0.1);
+  padding: 10px 15px;
+  border-radius: 8px;
+}
+
+/* Footer */
+.classroom-footer {
+  text-align: center;
+  padding: 20px;
+  color: var(--light-text);
+  font-size: 14px;
+  margin-top: auto;
+}
+
+/* Animations */
+@keyframes classroom-fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.classroom-fade-in {
+  animation: classroom-fadeIn 0.5s ease-in-out;
+}
+
+/* Media queries */
+@media (max-width: 768px) {
+  .classroom-container, .classroom-join-form-container {
+    padding: 20px 15px;
+  }
+  
+  .classroom-page h1 {
+    font-size: 26px;
+    margin-bottom: 30px;
+  }
+  
+  .classroom-page button {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .classroom-container, .classroom-join-form-container {
+    max-width: 1400px;
+  }
+}
+
+/* Thêm kiểu dáng mới cho tiêu đề Classroom */
+.classroom-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ff9800;
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.classroom-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(to right, #ff9800, #ff5722);
+  border-radius: 2px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--discord-dark);
+  color: var(--text-color);
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.loading-container p {
+  background-color: var(--discord-dark-secondary);
+  padding: 20px 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+} 
