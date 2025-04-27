@@ -101,7 +101,7 @@ const ChatRoomList = ({ user }) => {
 
   return (
     <>
-      <div className='fixed bottom-0 right-4 w-80 z-40 shadow-lg'>
+      <div className='fixed bottom-0 right-2 w-80 z-40 shadow-lg' style={{ maxWidth: 'calc(100vw - 20px)' }}>
         {/* Header */}
         <div
           onClick={toggleOpen}
